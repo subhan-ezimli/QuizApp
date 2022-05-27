@@ -13,9 +13,11 @@ using Quiz_Application.Services.Entities;
 using Quiz_Application.Web.Authentication;
 using Quiz_Application.Services.Repository.Interfaces;
 using Quiz_Application.Web.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Quiz_Application.Web.Controllers
 {
+    [Authorize(Roles = "candidate")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -27,21 +29,20 @@ namespace Quiz_Application.Web.Controllers
             _candidate = candidate;
         }
 
-        [BasicAuthentication]
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index()
         {
-            Candidate objHis = HttpContext.Session.GetObjectFromJson<Candidate>("AuthenticatedUser");
-            IQueryable<Candidate> iqCandidate = await _candidate.SearchCandidate(e => e.Sl_No.Equals(objHis.Sl_No));
+
+            var identity = HttpContext.User.Identity.Name;
+            IQueryable<Candidate> iqCandidate = await _candidate.SearchCandidate(e => e.UserName.Equals(identity));
             Candidate objCandidate = iqCandidate.FirstOrDefault();
             return View(objCandidate);
         }       
 
-        [BasicAuthentication]
+
         public async Task<IActionResult> Profile()
         {
-            Candidate objHis= HttpContext.Session.GetObjectFromJson<Candidate>("AuthenticatedUser");
-            IQueryable<Candidate> iqCandidate =await _candidate.SearchCandidate(e=>e.Sl_No.Equals(objHis.Sl_No));
+            var identity = HttpContext.User.Identity.Name;
+            IQueryable<Candidate> iqCandidate = await _candidate.SearchCandidate(e => e.UserName.Equals(identity));
             Candidate objCandidate = iqCandidate.FirstOrDefault();
 
             ProfileViewModel objModel = new ProfileViewModel()
@@ -57,7 +58,6 @@ namespace Quiz_Application.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile([FromForm] ProfileViewModel argObj)
         {
             int i = 0;
@@ -108,7 +108,6 @@ namespace Quiz_Application.Web.Controllers
             return View(argObj);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

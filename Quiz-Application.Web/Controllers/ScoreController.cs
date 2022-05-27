@@ -13,27 +13,35 @@ using Quiz_Application.Web.Authentication;
 using Quiz_Application.Services.Entities;
 using Quiz_Application.Services.Repository.Interfaces;
 using System.Drawing.Imaging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Quiz_Application.Web.Controllers
 {
-    [BasicAuthentication]
+    [Authorize(Roles = "candidate")]
     public class ScoreController : Controller
     {
        private readonly IConverter _converter;
        private readonly ILogger<ScoreController> _logger;
        private readonly IResult<Services.Entities.Result> _result;
+       private readonly ICandidate<Services.Entities.Candidate> _candidate;
 
-       public ScoreController(ILogger<ScoreController> logger, IResult<Services.Entities.Result> result, IConverter converter)
-       {
+        public ScoreController(ILogger<ScoreController> logger, IResult<Services.Entities.Result> result, IConverter converter, ICandidate<Candidate> candidate)
+        {
             _logger = logger;
             _result = result;
             _converter = converter;
-       }
-       public async Task<IActionResult> Result()
+            _candidate = candidate;
+        }
+        public async Task<IActionResult> Result()
        {
             try
             {
-                Candidate _objCandidate = HttpContext.Session.GetObjectFromJson<Candidate>("AuthenticatedUser");
+                //Candidate _objCandidate = HttpContext.Session.GetObjectFromJson<Candidate>("AuthenticatedUser");
+
+                var identity = HttpContext.User.Identity.Name;
+                IQueryable<Candidate> iqCandidate = await _candidate.SearchCandidate(e => e.UserName.Equals(identity));
+                Candidate _objCandidate = iqCandidate.FirstOrDefault();
+
 
                 IEnumerable<QuizAttempt> _obj = await _result.GetAttemptHistory(_objCandidate.Candidate_ID);
                 Root objRoot = new Root(){

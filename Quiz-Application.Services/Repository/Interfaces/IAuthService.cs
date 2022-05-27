@@ -1,4 +1,5 @@
-﻿using DataAccess.Dtos.Concrete;
+﻿using Business.Utilities.Results.Abstract;
+using DataAccess.Dtos.Concrete;
 using Quiz_Application.Services.Dtos;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Business.Abstract
 {
     public interface IAuthService
     {
-        public Task<bool> Login(LoginDto loginDto);
+        public Task<IDataResult<string>> Login(LoginDto loginDto);
         public Task<bool> Register(RegisterDto registerDto);
         public Task LogOut();
     }

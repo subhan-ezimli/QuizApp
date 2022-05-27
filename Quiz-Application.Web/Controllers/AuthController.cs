@@ -55,9 +55,9 @@ namespace Quiz_Application.Web.Controllers
                 Password = viewModel.Password
             };
             var result = await _authService.Login(dto);
-            if (result)
+            if (result.Data=="candidate")
             {
-                return RedirectToAction("Index", "Home", new { Area = "Admin" });
+                return RedirectToAction("Index", "Home", new { Area = "candidate" });
             }
             return View();
         }

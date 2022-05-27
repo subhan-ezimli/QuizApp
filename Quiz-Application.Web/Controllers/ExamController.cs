@@ -9,11 +9,11 @@ using Quiz_Application.Web.Authentication;
 using Quiz_Application.Services.Entities;
 using Quiz_Application.Web.Models;
 using Quiz_Application.Services.Repository.Interfaces;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Quiz_Application.Web.Controllers
 {    
-    [BasicAuthentication]   
+    [Authorize(Roles = "candidate")]
     public class ExamController : Controller
     {
         private readonly ILogger<ExamController> _logger;

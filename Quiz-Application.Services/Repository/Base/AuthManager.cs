@@ -15,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Quiz_Application.Services.Entities;
 using DataAccess.Dtos.Concrete;
 using Quiz_Application.Services.Dtos;
+using Business.Utilities.Results.Abstract;
+using Business.Utilities.Results.Concrete;
 
 namespace Business.Concrete
 {
@@ -31,10 +33,17 @@ namespace Business.Concrete
             _userManager = userManager;
             _mapper = mapper;
         }
-        public async Task<bool> Login(LoginDto loginDto)
+        public async Task<IDataResult<string>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            return  await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (result)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+                return new SuccessDataResult<string>(userRole, Messages.SuccessLogin);
+            }
+            return new ErrorDataResult<string>(Messages.FailLoginUser);
         }
 
         public async Task LogOut()
@@ -48,8 +57,8 @@ namespace Business.Concrete
             mappedEntity.UserName =  registerDto.Candidate_ID;
             var result = await _userManager.CreateAsync(mappedEntity, registerDto.Password);
               
-            var resultaa =   await _roleManager.CreateAsync(new IdentityRole("candidate"));
-            var roles = await _roleManager.Roles.ToListAsync();
+            //var resultaa =   await _roleManager.CreateAsync(new IdentityRole("candidate"));
+            //var roles = await _roleManager.Roles.ToListAsync();
             await _userManager.AddToRoleAsync(mappedEntity, "candidate");
             return result.Succeeded;
         }
