@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quiz_Application.Services.Entities
 {
-    public class Candidate:IdentityUser
+    public class Candidate : IdentityUser
     {
         [Key]
         public int Sl_No { get; set; }
@@ -23,6 +18,6 @@ namespace Quiz_Application.Services.Entities
         [Column(TypeName = "varchar(250)")]
         public string Password { get; set; }
         [MaxLength]
-        public string ImgFile { get; set; }        
+        public string ImgFile { get; set; }
     }
 }

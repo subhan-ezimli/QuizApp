@@ -34,7 +34,7 @@ namespace Quiz_Application.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration.GetConnectionString("HomeNotebook");
+            var connection = Configuration.GetConnectionString("WorkNotebook");
             services.AddServices();
             services.AddDistributedMemoryCache();
             services.AddSession();
@@ -111,7 +111,7 @@ namespace Quiz_Application.Web
                     name: "default",
                     pattern: "{controller=Auth}/{action=Login}/{id?}");
             });
-            SeedIdentity.Seed(userManager, roleManager, Configuration).Wait();
+                SeedIdentity.Seed(userManager, roleManager, Configuration).Wait();
         }
     }
 }

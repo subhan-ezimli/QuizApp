@@ -39,6 +39,7 @@ namespace Quiz_Application.Web.Controllers
             }
             return View();
         }
+
         [HttpGet]
         public async Task<IActionResult> Login()
         {
@@ -55,10 +56,16 @@ namespace Quiz_Application.Web.Controllers
                 Password = viewModel.Password
             };
             var result = await _authService.Login(dto);
-            if (result.Data=="candidate")
+            if (result.Data == "candidate")
             {
                 return RedirectToAction("Index", "Home", new { Area = "candidate" });
             }
+
+            else if (result.Data == "admin")
+            {
+                return RedirectToAction("Index", "Home", new { Area = "admin" });
+            }
+
             return View();
         }
 

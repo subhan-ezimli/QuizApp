@@ -1,6 +1,7 @@
 ﻿using Quiz_Application.Services.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Quiz_Application.Services.Dtos
         public int QuestionId { get; set; }
         public string Question { get; set; }
         public List<Choice> Choices { get; set; }
-        public int AnsweId { get; set; }
+        public int AnswerId { get; set; }
     }
+
+
 }

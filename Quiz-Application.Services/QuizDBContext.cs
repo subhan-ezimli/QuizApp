@@ -7,18 +7,20 @@ namespace Quiz_Application.Services
 {
     public class QuizDBContext : IdentityDbContext<Candidate>
     {
-        public QuizDBContext(DbContextOptions<QuizDBContext> options) : base(options)
-        {
-        }
         public QuizDBContext()
         {
 
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Data Source=COMPUTER\\NICATRED;Initial Catalog=ExamDB;Trusted_connection=true;");
-        //    base.OnConfiguring(optionsBuilder);
-        //}
+
+        public QuizDBContext(DbContextOptions<QuizDBContext> options) : base(options)
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=COMPUTER;Database=ExamDB;Trusted_connection=true;");
+            base.OnConfiguring(optionsBuilder);
+        }
         public virtual DbSet<Candidate> Candidate { get; set; }
         public virtual DbSet<Exam> Exam { get; set; }
         public virtual DbSet<Question> Question { get; set; }
@@ -41,6 +43,6 @@ namespace Quiz_Application.Services
             });
             base.OnModelCreating(modelBuilder);
         }
-       
+
     }
 }

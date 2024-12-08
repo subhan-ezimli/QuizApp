@@ -1,16 +1,10 @@
-﻿using AutoMapper;
-using Business.Abstract;
-using Business.Constants;
-using DataAccess.Dtos.Concrete;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Quiz_Application.Services.Dtos;
 using Quiz_Application.Services.Entities;
 using Quiz_Application.Services.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Quiz_Application.Services.Repository.Base
@@ -67,23 +61,42 @@ namespace Quiz_Application.Services.Repository.Base
 
         public async Task<List<QuestionAndChoises>> GetQuestionAndChoises()
         {
-           
-            List<QuestionAndChoises> questionAndChoisesList = new List<QuestionAndChoises>();
             using (QuizDBContext context = new QuizDBContext())
             {
+                List<QuestionAndChoises> questionAndChoisesList = new List<QuestionAndChoises>();
 
                 var questions = await context.Question.ToListAsync();
                 foreach (var question in questions)
                 {
                     QuestionAndChoises questionAndChoises = new QuestionAndChoises();
+
                     questionAndChoises.Question = question.DisplayText;
                     questionAndChoises.QuestionId = question.QuestionID;
-                    var choises = context.Choice.Where(x => x.QuestionID == question.QuestionID).ToList();
+                    var answer = await context.Answer.Where(x => x.QuestionID == question.QuestionID).FirstOrDefaultAsync();
+                    questionAndChoises.AnswerId = answer.ChoiceID;
+                    var choises = await context.Choice.Where(x => x.QuestionID == question.QuestionID).ToListAsync();
+
+                    var choiceDtoList = new List<Choice>();
                     foreach (var choice in choises)
                     {
-                        questionAndChoises.Choices.Add(choice);
+                        var cho = new Choice()
+                        {
+                            ChoiceID = choice.ChoiceID,
+                            IsDeleted = choice.IsDeleted,
+                            CreatedBy = choice.CreatedBy,
+                            CreatedOn = choice.CreatedOn,
+                            DisplayText = choice.DisplayText,
+                            ModifiedBy = choice.ModifiedBy,
+                            ModifiedOn = choice.ModifiedOn,
+                            QuestionID = choice.QuestionID
+                        };
+                        choiceDtoList.Add(cho);
+
                     }
+                    questionAndChoises.Choices = choiceDtoList;
+
                     questionAndChoisesList.Add(questionAndChoises);
+
                 }
                 return questionAndChoisesList;
             }

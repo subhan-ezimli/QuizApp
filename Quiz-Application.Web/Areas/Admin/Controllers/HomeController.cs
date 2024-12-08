@@ -24,7 +24,7 @@ namespace Quiz_Application.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-           var list= _adminActionsService.GetQuestionAndChoises();
+            var list = await _adminActionsService.GetQuestionAndChoises();
             return View(list);
         }
 

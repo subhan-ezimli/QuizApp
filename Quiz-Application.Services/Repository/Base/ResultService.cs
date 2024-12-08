@@ -44,7 +44,7 @@ namespace Quiz_Application.Services.Repository.Base
                 FROM Result R
                 LEFT JOIN Exam E ON R.ExamID = E.ExamID
                 WHERE R.CandidateID ='" + argCandidateID + "' AND R.IsCorrent = 1"
-                +"GROUP BY R.SessionID, R.ExamID, E.Name, E.FullMarks, R.CreatedOn", argCandidateID).ToListAsync();
+                + "GROUP BY R.SessionID, R.ExamID, E.Name, E.FullMarks, R.CreatedOn", argCandidateID).ToListAsync();
                 return obj;
             }
             catch (Exception ex)
@@ -59,7 +59,7 @@ namespace Quiz_Application.Services.Repository.Base
         {
             try
             {
-                List<QuizReport> obj = await _dbContext.Set<QuizReport>().FromSqlRaw(@"EXEC GetReport {0},{1},{2}", argRpt.ExamID, argRpt.CandidateID, argRpt.SessionID).ToListAsync();  
+                List<QuizReport> obj = await _dbContext.Set<QuizReport>().FromSqlRaw(@"EXEC GetReport {0},{1},{2}", argRpt.ExamID, argRpt.CandidateID, argRpt.SessionID).ToListAsync();
                 return obj;
             }
             catch (Exception ex)
@@ -72,12 +72,12 @@ namespace Quiz_Application.Services.Repository.Base
         }
         public async Task<string> GetCertificateString(ReqCertificate argRpt)
         {
-            Candidate _candidate =await _dbContext.Candidate.Where(e => e.Candidate_ID == argRpt.CandidateID.ToString()).FirstOrDefaultAsync();          
+            Candidate _candidate = await _dbContext.Candidate.Where(e => e.Candidate_ID == argRpt.CandidateID.ToString()).FirstOrDefaultAsync();
 
             try
             {
-                string cert =null;
-                cert= @"<html>
+                string cert = null;
+                cert = @"<html>
 <head>
 <style type='text/css'>
 .outer-border {
@@ -130,12 +130,12 @@ namespace Quiz_Application.Services.Repository.Base
 	<span class='certification'>Certificate of Completion</span> 
 	<br><br> 
 	<span class='certify'><i>This is to certify that</i></span> 
-	<br><br> <span class='name'><b>"+ _candidate.Name + @"</b></span><br />
+	<br><br> <span class='name'><b>" + _candidate.Name + @"</b></span><br />
 	<br /> <span class='certify'><i>has successfully completed the certification</i></span>
-	<br /><br /> <span class='fs-30'>"+argRpt.Exam+@"</span> <br /><br /> 
-	<span class='fs-20'>with score of <b>"+argRpt.Score+@"</b></span>
+	<br /><br /> <span class='fs-30'>" + argRpt.Exam + @"</span> <br /><br /> 
+	<span class='fs-20'>with score of <b>" + argRpt.Score + @"</b></span>
 	<br /><br /><br /> 
-	<span class='certify'><i>dated</i></span><br> <span class='fs-30'>"+argRpt.Date+@"</span>
+	<span class='certify'><i>dated</i></span><br> <span class='fs-30'>" + argRpt.Date + @"</span>
     </div>
 </div>
 </body>
@@ -151,5 +151,5 @@ namespace Quiz_Application.Services.Repository.Base
             }
         }
 
-    }   
+    }
 }
